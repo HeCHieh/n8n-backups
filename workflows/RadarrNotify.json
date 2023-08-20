@@ -1,0 +1,145 @@
+{
+  "active": true,
+  "connections": {
+    "GetCover": {
+      "main": [
+        [
+          {
+            "node": "下载完成",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Radarr": {
+      "main": [
+        [
+          {
+            "node": "GetCover",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2023-08-19T09:19:07.823Z",
+  "id": "oWhzXCKA0PA2zX5E",
+  "name": "RadarrNotify",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"msgtype\":\"news\",\"news\":{\"articles\":[{\"title\":\"{{ $json[\"movie_results\"][0][\"title\"] }}\",\"description\":\"下载完成\",\"url\":\"infuse://\",\"picurl\":\"https://image.tmdb.org/t/p/original{{ $json[\"movie_results\"][0][\"backdrop_path\"] }}\"}]}}",
+        "options": {}
+      },
+      "id": "987f8392-1e96-4d74-b133-edf79f8ef164",
+      "name": "下载完成",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        360
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "TMvXuUaW4SSXpmd1",
+          "name": "qq enterprise robot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.themoviedb.org/3/find/{{ $json.body.remoteMovie.imdbId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "external_source",
+              "value": "imdb_id"
+            },
+            {
+              "name": "language",
+              "value": "zh-CN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f8cb2e52-b3e2-441d-a789-fe47838970e4",
+      "name": "GetCover",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        280,
+        360
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "JFfklwGxljPuxoKN",
+          "name": "TMDB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "xarr-notify/radarr",
+        "responseMode": "lastNode",
+        "responseCode": "200",
+        "responseData": "noData",
+        "options": {}
+      },
+      "id": "11cbee64-0c5b-438d-bc9c-89db0dae2c99",
+      "name": "Radarr",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        60,
+        360
+      ],
+      "webhookId": "a7e61c18-3733-44f0-bd47-07d6b74dd708"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "SO5khPrUHzVpnE1Z",
+      "createdAt": "2023-08-19T06:58:23.480Z",
+      "updatedAt": "2023-08-19T06:58:23.480Z",
+      "name": "xarr"
+    },
+    {
+      "id": "zEH0SKpHC1lIupPl",
+      "createdAt": "2023-08-19T04:05:55.538Z",
+      "updatedAt": "2023-08-19T04:05:55.538Z",
+      "name": "webhook"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2023-08-19T11:28:20.000Z",
+  "versionId": "4602d0ff-d790-447c-a40d-2939af825cdb"
+}
