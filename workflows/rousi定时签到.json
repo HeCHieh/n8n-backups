@@ -1,0 +1,73 @@
+{
+  "active": true,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "签到",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2023-08-20T06:21:14.298Z",
+  "id": "r5k0SIfQzfvEnChj",
+  "name": "rousi定时签到",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "2b8c8166-5720-4648-a002-46ce7ee558ed",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://rousi.zip/attendance.php",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "04437fc8-dae7-4fc8-b380-60314c4d59f2",
+      "name": "签到",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        720,
+        380
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mNspSnujtRf2aYP5",
+          "name": "rousi.zip"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2023-08-20T06:26:30.000Z",
+  "versionId": "50e8cfcf-90ca-42c2-8023-c7274706565e"
+}
