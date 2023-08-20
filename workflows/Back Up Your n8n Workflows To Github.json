@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "n8n": {
       "main": [
@@ -209,6 +209,12 @@
       ],
       "typeVersion": 1,
       "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "cMTUcMj0rggVd5uk",
+          "name": "GitHub account"
+        }
+      },
       "continueOnFail": true
     },
     {
@@ -290,7 +296,13 @@
         2740,
         440
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "cMTUcMj0rggVd5uk",
+          "name": "GitHub account"
+        }
+      }
     },
     {
       "parameters": {
@@ -308,7 +320,13 @@
         2740,
         620
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "cMTUcMj0rggVd5uk",
+          "name": "GitHub account"
+        }
+      }
     },
     {
       "parameters": {
@@ -330,7 +348,7 @@
           "string": [
             {
               "name": "repo.owner",
-              "value": "n8n-io"
+              "value": "HeCHieh"
             },
             {
               "name": "repo.name",
@@ -398,8 +416,8 @@
       "name": "Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1440,
-        180
+        1420,
+        200
       ],
       "typeVersion": 1
     },
@@ -433,7 +451,7 @@
       "typeVersion": 1,
       "credentials": {
         "n8nApi": {
-          "id": "KXAFKxJa03tWIRoq",
+          "id": "5fItr1gNUEP90jwx",
           "name": "n8n account"
         }
       }
@@ -476,7 +494,7 @@
       "name": "备份"
     }
   ],
-  "triggerCount": 0,
-  "updatedAt": "2023-08-20T08:20:51.000Z",
-  "versionId": "e028da8f-0753-4dd5-b95b-f4128a3797a8"
+  "triggerCount": 1,
+  "updatedAt": "2023-08-20T08:42:56.000Z",
+  "versionId": "91b52721-e392-4f67-9aa0-3ad74915efb5"
 }
