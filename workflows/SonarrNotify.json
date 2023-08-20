@@ -1,0 +1,145 @@
+{
+  "active": true,
+  "connections": {
+    "Sonarr": {
+      "main": [
+        [
+          {
+            "node": "GetCover",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetCover": {
+      "main": [
+        [
+          {
+            "node": "下载完成",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2023-08-18T14:13:19.322Z",
+  "id": "5Qz0SfaxaxRzp32U",
+  "name": "SonarrNotify",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "xarr-notify/sonarr",
+        "responseMode": "lastNode",
+        "responseCode": "200",
+        "responseData": "noData",
+        "options": {}
+      },
+      "id": "19973e7c-b2ab-4a60-bff6-c31d85e4bede",
+      "name": "Sonarr",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        60,
+        360
+      ],
+      "webhookId": "bda5faf8-78e8-41fc-a672-cf9e6f1fa66c"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"msgtype\":\"news\",\"news\":{\"articles\":[{\"title\":\"{{ $json[\"tv_results\"][0][\"name\"] }}\",\"description\":\"下载完成\",\"url\":\"infuse://\",\"picurl\":\"https://image.tmdb.org/t/p/original{{ $json[\"tv_results\"][0][\"backdrop_path\"] }}\"}]}}",
+        "options": {}
+      },
+      "id": "0a678ca5-2187-4792-accc-492d93003901",
+      "name": "下载完成",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        360
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "TMvXuUaW4SSXpmd1",
+          "name": "Query Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.themoviedb.org/3/find/{{ $json.body.series.imdbId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "external_source",
+              "value": "imdb_id"
+            },
+            {
+              "name": "language",
+              "value": "zh-CN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6b96553d-5e08-4cbb-9730-293f0c333e89",
+      "name": "GetCover",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        280,
+        360
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "JFfklwGxljPuxoKN",
+          "name": "TMDB"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "SO5khPrUHzVpnE1Z",
+      "createdAt": "2023-08-19T06:58:23.480Z",
+      "updatedAt": "2023-08-19T06:58:23.480Z",
+      "name": "xarr"
+    },
+    {
+      "id": "zEH0SKpHC1lIupPl",
+      "createdAt": "2023-08-19T04:05:55.538Z",
+      "updatedAt": "2023-08-19T04:05:55.538Z",
+      "name": "webhook"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2023-08-19T11:27:26.000Z",
+  "versionId": "d5cc1646-d5f3-44a9-a616-fbdefcf621dc"
+}
