@@ -66,8 +66,15 @@
       "recurrencyRules": []
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "id": "AVNKICFjrk83NMcV",
+      "createdAt": "2023-08-20T09:07:19.799Z",
+      "updatedAt": "2023-08-20T09:07:19.799Z",
+      "name": "PT签到"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2023-08-20T06:26:30.000Z",
-  "versionId": "50e8cfcf-90ca-42c2-8023-c7274706565e"
+  "updatedAt": "2023-08-20T09:07:20.000Z",
+  "versionId": "26cb9bf4-9444-4db9-91e7-be887d36f748"
 }
