@@ -79,13 +79,13 @@
       "credentials": {
         "httpQueryAuth": {
           "id": "TMvXuUaW4SSXpmd1",
-          "name": "Query Auth account"
+          "name": "qq enterprise robot"
         }
       }
     },
     {
       "parameters": {
-        "url": "=https://api.themoviedb.org/3/find/{{ $json.body.series.imdbId }}",
+        "url": "=https://api.themoviedb.org/3/find/{{ $json.body.series.tvdbId }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendQuery": true,
@@ -93,7 +93,7 @@
           "parameters": [
             {
               "name": "external_source",
-              "value": "imdb_id"
+              "value": "tvdb_id"
             },
             {
               "name": "language",
@@ -140,6 +140,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2023-08-19T11:27:26.000Z",
-  "versionId": "d5cc1646-d5f3-44a9-a616-fbdefcf621dc"
+  "updatedAt": "2023-08-21T03:50:26.000Z",
+  "versionId": "0ea6bac6-1641-4a17-8a95-f7874a0707ea"
 }
