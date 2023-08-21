@@ -11,6 +11,17 @@
           }
         ]
       ]
+    },
+    "签到": {
+      "main": [
+        [
+          {
+            "node": "签到完成",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2023-08-20T06:21:14.298Z",
@@ -30,7 +41,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
-        500,
+        400,
         380
       ]
     },
@@ -39,6 +50,15 @@
         "url": "https://rousi.zip/attendance.php",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+            }
+          ]
+        },
         "options": {}
       },
       "id": "04437fc8-dae7-4fc8-b380-60314c4d59f2",
@@ -46,13 +66,49 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        720,
+        620,
         380
       ],
       "credentials": {
         "httpHeaderAuth": {
           "id": "mNspSnujtRf2aYP5",
           "name": "rousi.zip"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi签到成功\",\n\t\t\"mentioned_list\":[\"HeJie\"]\n    }\n}",
+        "options": {}
+      },
+      "id": "5336ca2f-c80c-46b9-a33b-2d402522212a",
+      "name": "签到完成",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        820,
+        380
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "TMvXuUaW4SSXpmd1",
+          "name": "qq enterprise robot"
         }
       }
     }
@@ -75,6 +131,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2023-08-20T09:07:20.000Z",
-  "versionId": "26cb9bf4-9444-4db9-91e7-be887d36f748"
+  "updatedAt": "2023-08-21T02:27:10.000Z",
+  "versionId": "7791d579-ebb6-40fe-a1df-28a10c5815cb"
 }
