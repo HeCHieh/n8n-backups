@@ -12,11 +12,29 @@
         ]
       ]
     },
-    "签到": {
+    "IF": {
       "main": [
         [
           {
             "node": "签到完成",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "签到失败",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "签到": {
+      "main": [
+        [
+          {
+            "node": "IF",
             "type": "main",
             "index": 0
           }
@@ -41,8 +59,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
-        400,
-        380
+        180,
+        360
       ]
     },
     {
@@ -66,8 +84,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        620,
-        380
+        400,
+        360
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -102,7 +120,63 @@
       "typeVersion": 4.1,
       "position": [
         820,
-        380
+        220
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "TMvXuUaW4SSXpmd1",
+          "name": "qq enterprise robot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "9ac23a78-6ad9-4126-bb22-33dbe37973bf",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        620,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi签到失败，请人工签到\",\n\t\t\"mentioned_list\":[\"HeJie\"]\n    }\n}",
+        "options": {}
+      },
+      "id": "f1db25a3-e333-42e8-9654-0d4f982c0781",
+      "name": "签到失败",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        840,
+        440
       ],
       "retryOnFail": true,
       "credentials": {
@@ -131,6 +205,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2023-08-21T02:27:10.000Z",
-  "versionId": "7791d579-ebb6-40fe-a1df-28a10c5815cb"
+  "updatedAt": "2023-08-21T06:15:25.000Z",
+  "versionId": "6d821bf0-e3dd-4862-a73e-67d9a4374db2"
 }
