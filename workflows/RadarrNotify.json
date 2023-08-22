@@ -24,8 +24,8 @@
       ]
     }
   },
-  "createdAt": "2023-08-19T09:19:07.823Z",
-  "id": "oWhzXCKA0PA2zX5E",
+  "createdAt": "2023-08-22T03:45:57.717Z",
+  "id": "BNfwERVHRr0jlCat",
   "name": "RadarrNotify",
   "nodes": [
     {
@@ -48,19 +48,19 @@
         "jsonBody": "={\"msgtype\":\"news\",\"news\":{\"articles\":[{\"title\":\"{{ $json[\"movie_results\"][0][\"title\"] }}\",\"description\":\"下载完成\",\"url\":\"infuse://\",\"picurl\":\"https://image.tmdb.org/t/p/original{{ $json[\"movie_results\"][0][\"backdrop_path\"] }}\"}]}}",
         "options": {}
       },
-      "id": "987f8392-1e96-4d74-b133-edf79f8ef164",
+      "id": "413ffec6-3af7-49bc-bb6b-c8b3e60d3de8",
       "name": "下载完成",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        500,
-        360
+        660,
+        460
       ],
       "retryOnFail": true,
       "credentials": {
         "httpQueryAuth": {
-          "id": "TMvXuUaW4SSXpmd1",
-          "name": "qq enterprise robot"
+          "id": "dw4OAyEOXlllAsX2",
+          "name": "qq enterprise bot"
         }
       }
     },
@@ -84,18 +84,18 @@
         },
         "options": {}
       },
-      "id": "f8cb2e52-b3e2-441d-a789-fe47838970e4",
+      "id": "300a2b57-8548-47e3-a542-34ee79f5c7db",
       "name": "GetCover",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        280,
-        360
+        440,
+        460
       ],
       "retryOnFail": true,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "JFfklwGxljPuxoKN",
+          "id": "dIphhzWGT80hKx0I",
           "name": "TMDB"
         }
       }
@@ -105,17 +105,16 @@
         "httpMethod": "POST",
         "path": "xarr-notify/radarr",
         "responseMode": "lastNode",
-        "responseCode": "200",
         "responseData": "noData",
         "options": {}
       },
-      "id": "11cbee64-0c5b-438d-bc9c-89db0dae2c99",
+      "id": "81d5c6aa-5a34-4e29-9943-b978a1eddbee",
       "name": "Radarr",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        60,
-        360
+        220,
+        460
       ],
       "webhookId": "a7e61c18-3733-44f0-bd47-07d6b74dd708"
     }
@@ -127,19 +126,19 @@
   "staticData": null,
   "tags": [
     {
-      "id": "SO5khPrUHzVpnE1Z",
-      "createdAt": "2023-08-19T06:58:23.480Z",
-      "updatedAt": "2023-08-19T06:58:23.480Z",
+      "createdAt": "2023-08-22T03:45:51.360Z",
+      "updatedAt": "2023-08-22T03:45:51.360Z",
+      "id": "DBrYNvbFlHXhFom6",
       "name": "xarr"
     },
     {
-      "id": "zEH0SKpHC1lIupPl",
-      "createdAt": "2023-08-19T04:05:55.538Z",
-      "updatedAt": "2023-08-19T04:05:55.538Z",
+      "createdAt": "2023-08-22T03:45:51.359Z",
+      "updatedAt": "2023-08-22T03:45:51.359Z",
+      "id": "rRYlpW9rE8Nzvi1V",
       "name": "webhook"
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2023-08-19T11:28:20.000Z",
-  "versionId": "4602d0ff-d790-447c-a40d-2939af825cdb"
+  "updatedAt": "2023-08-22T03:47:12.000Z",
+  "versionId": "4a99327a-c281-4e43-bbdd-12e9a03df427"
 }
