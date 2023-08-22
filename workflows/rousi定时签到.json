@@ -42,8 +42,8 @@
       ]
     }
   },
-  "createdAt": "2023-08-20T06:21:14.298Z",
-  "id": "r5k0SIfQzfvEnChj",
+  "createdAt": "2023-08-22T03:35:55.950Z",
+  "id": "DlfkpcNu0HKHgY4J",
   "name": "rousi定时签到",
   "nodes": [
     {
@@ -54,13 +54,13 @@
           ]
         }
       },
-      "id": "2b8c8166-5720-4648-a002-46ce7ee558ed",
+      "id": "a9e97ef0-6b07-4c8e-9a89-e8fd6f32f83b",
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
-        180,
-        360
+        -920,
+        1240
       ]
     },
     {
@@ -79,18 +79,18 @@
         },
         "options": {}
       },
-      "id": "04437fc8-dae7-4fc8-b380-60314c4d59f2",
+      "id": "0b8298a8-86f3-4f38-9a98-c85931e3d288",
       "name": "签到",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        400,
-        360
+        -700,
+        1240
       ],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "mNspSnujtRf2aYP5",
-          "name": "rousi.zip"
+          "id": "FO2vsxIJVzgZYH9l",
+          "name": "Header Auth account"
         }
       }
     },
@@ -114,19 +114,19 @@
         "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi签到成功\",\n\t\t\"mentioned_list\":[\"HeJie\"]\n    }\n}",
         "options": {}
       },
-      "id": "5336ca2f-c80c-46b9-a33b-2d402522212a",
+      "id": "b63c1c21-2fbe-40e2-b005-ba4041e77057",
       "name": "签到完成",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        820,
-        220
+        -260,
+        1100
       ],
       "retryOnFail": true,
       "credentials": {
         "httpQueryAuth": {
-          "id": "TMvXuUaW4SSXpmd1",
-          "name": "qq enterprise robot"
+          "id": "dw4OAyEOXlllAsX2",
+          "name": "qq enterprise bot"
         }
       }
     },
@@ -141,13 +141,13 @@
           ]
         }
       },
-      "id": "9ac23a78-6ad9-4126-bb22-33dbe37973bf",
+      "id": "37b85b80-983a-4899-9f07-72dff28444af",
       "name": "IF",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        620,
-        360
+        -480,
+        1240
       ]
     },
     {
@@ -170,19 +170,19 @@
         "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi签到失败，请人工签到\",\n\t\t\"mentioned_list\":[\"HeJie\"]\n    }\n}",
         "options": {}
       },
-      "id": "f1db25a3-e333-42e8-9654-0d4f982c0781",
+      "id": "664630f8-6d49-4242-aa32-c52931abf447",
       "name": "签到失败",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        840,
-        440
+        -260,
+        1320
       ],
       "retryOnFail": true,
       "credentials": {
         "httpQueryAuth": {
-          "id": "TMvXuUaW4SSXpmd1",
-          "name": "qq enterprise robot"
+          "id": "dw4OAyEOXlllAsX2",
+          "name": "qq enterprise bot"
         }
       }
     }
@@ -198,13 +198,13 @@
   },
   "tags": [
     {
-      "id": "AVNKICFjrk83NMcV",
-      "createdAt": "2023-08-20T09:07:19.799Z",
-      "updatedAt": "2023-08-20T09:07:19.799Z",
+      "createdAt": "2023-08-22T03:36:30.239Z",
+      "updatedAt": "2023-08-22T03:36:30.239Z",
+      "id": "YdllD5VmZvjnL63L",
       "name": "PT签到"
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2023-08-21T06:15:25.000Z",
-  "versionId": "6d821bf0-e3dd-4862-a73e-67d9a4374db2"
+  "updatedAt": "2023-08-22T03:43:22.000Z",
+  "versionId": "46a5323c-ccb4-4b64-908e-4a8f28434daa"
 }
