@@ -34,6 +34,17 @@
       "main": [
         [
           {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
             "node": "IF",
             "type": "main",
             "index": 0
@@ -59,8 +70,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
-        -920,
-        1240
+        -1140,
+        1220
       ]
     },
     {
@@ -84,13 +95,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        -700,
-        1240
+        -920,
+        1220
       ],
       "credentials": {
         "httpHeaderAuth": {
           "id": "FO2vsxIJVzgZYH9l",
-          "name": "Header Auth account"
+          "name": "rousi cookie"
         }
       }
     },
@@ -119,8 +130,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        -260,
-        1100
+        -40,
+        1080
       ],
       "retryOnFail": true,
       "credentials": {
@@ -135,8 +146,8 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{ $json.data }}",
-              "operation": "isNotEmpty"
+              "value1": "={{ $json.td }}",
+              "value2": "签到成功"
             }
           ]
         }
@@ -146,8 +157,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -480,
-        1240
+        -460,
+        1220
       ]
     },
     {
@@ -175,8 +186,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        -260,
-        1320
+        -40,
+        1300
       ],
       "retryOnFail": true,
       "credentials": {
@@ -185,6 +196,28 @@
           "name": "qq enterprise bot"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "td",
+              "cssSelector": "#outer td.embedded>h2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e327dca4-281b-4749-97ee-13c82f71e1eb",
+      "name": "HTML",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        1220
+      ]
     }
   ],
   "pinData": {},
@@ -205,6 +238,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2023-08-22T03:43:22.000Z",
-  "versionId": "46a5323c-ccb4-4b64-908e-4a8f28434daa"
+  "updatedAt": "2023-08-22T05:18:19.000Z",
+  "versionId": "4e2413fb-71e3-4f73-a63b-a31fa4f43ede"
 }
