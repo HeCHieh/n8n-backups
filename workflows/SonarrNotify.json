@@ -33,7 +33,6 @@
         "httpMethod": "POST",
         "path": "xarr-notify/sonarr",
         "responseMode": "lastNode",
-        "responseCode": "200",
         "responseData": "noData",
         "options": {}
       },
@@ -64,7 +63,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"msgtype\":\"news\",\"news\":{\"articles\":[{\"title\":\"{{ $json[\"tv_results\"][0][\"name\"] }}\",\"description\":\"下载完成\",\"url\":\"infuse://\",\"picurl\":\"https://image.tmdb.org/t/p/original{{ $json[\"tv_results\"][0][\"backdrop_path\"] }}\"}]}}",
+        "jsonBody": "={\"msgtype\":\"news\",\"news\":{\"articles\":[{\"title\":\"{{ $json[\"tv_results\"][0][\"name\"] }} 第{{ $('Sonarr').item.json[\"body\"][\"episodes\"][0][\"seasonNumber\"] }}季第{{ $('Sonarr').item.json[\"body\"][\"episodes\"][0][\"episodeNumber\"] }}集\",\"description\":\"下载完成\",\"url\":\"infuse://\",\"picurl\":\"https://image.tmdb.org/t/p/original{{ $json[\"tv_results\"][0][\"backdrop_path\"] }}\"}]}}",
         "options": {}
       },
       "id": "80286bbe-3638-4e61-9418-a8e6d7bd796d",
@@ -140,6 +139,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2023-08-22T03:48:42.000Z",
-  "versionId": "4719f3b6-20aa-4abd-ba65-639fe949b020"
+  "updatedAt": "2023-08-26T07:31:22.000Z",
+  "versionId": "b7c0b261-ba98-4145-8f5d-123bc43d8ea9"
 }
