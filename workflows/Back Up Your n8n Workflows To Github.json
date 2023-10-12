@@ -178,6 +178,7 @@
   },
   "createdAt": "2023-08-22T03:35:25.923Z",
   "id": "KkGZhTTm6YKDujUr",
+  "meta": null,
   "name": "Back Up Your n8n Workflows To Github",
   "nodes": [
     {
