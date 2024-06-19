@@ -55,7 +55,9 @@
   },
   "createdAt": "2023-08-22T03:35:55.950Z",
   "id": "DlfkpcNu0HKHgY4J",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "rousi定时签到",
   "nodes": [
     {
@@ -123,7 +125,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi签到成功\",\n\t\t\"mentioned_list\":[\"HeJie\"]\n    }\n}",
+        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi签到成功\"\n    }\n}",
         "options": {}
       },
       "id": "b63c1c21-2fbe-40e2-b005-ba4041e77057",
@@ -179,7 +181,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi签到失败，请人工签到\",\n\t\t\"mentioned_list\":[\"HeJie\"]\n    }\n}",
+        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi签到失败，请人工签到\"\n    }\n}",
         "options": {}
       },
       "id": "664630f8-6d49-4242-aa32-c52931abf447",
@@ -239,6 +241,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2023-08-22T05:18:19.000Z",
-  "versionId": "4e2413fb-71e3-4f73-a63b-a31fa4f43ede"
+  "updatedAt": "2024-06-18T16:35:40.000Z",
+  "versionId": "6f44c294-cc59-42f2-8e90-163f2b3825c3"
 }
