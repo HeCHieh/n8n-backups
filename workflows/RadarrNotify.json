@@ -1,5 +1,131 @@
 {
   "active": true,
+  "activeVersion": {
+    "updatedAt": "2025-11-26T12:53:20.968Z",
+    "createdAt": "2025-11-26T12:53:20.968Z",
+    "versionId": "4a99327a-c281-4e43-bbdd-12e9a03df427",
+    "workflowId": "BNfwERVHRr0jlCat",
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpQueryAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\"msgtype\":\"news\",\"news\":{\"articles\":[{\"title\":\"{{ $json[\"movie_results\"][0][\"title\"] }}\",\"description\":\"下载完成\",\"url\":\"infuse://\",\"picurl\":\"https://image.tmdb.org/t/p/original{{ $json[\"movie_results\"][0][\"backdrop_path\"] }}\"}]}}",
+          "options": {}
+        },
+        "id": "413ffec6-3af7-49bc-bb6b-c8b3e60d3de8",
+        "name": "下载完成",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          660,
+          460
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "httpQueryAuth": {
+            "id": "dw4OAyEOXlllAsX2",
+            "name": "qq enterprise bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "=https://api.themoviedb.org/3/find/{{ $json.body.remoteMovie.imdbId }}",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "external_source",
+                "value": "imdb_id"
+              },
+              {
+                "name": "language",
+                "value": "zh-CN"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "300a2b57-8548-47e3-a542-34ee79f5c7db",
+        "name": "GetCover",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          440,
+          460
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "dIphhzWGT80hKx0I",
+            "name": "TMDB"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "xarr-notify/radarr",
+          "responseMode": "lastNode",
+          "responseData": "noData",
+          "options": {}
+        },
+        "id": "81d5c6aa-5a34-4e29-9943-b978a1eddbee",
+        "name": "Radarr",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          220,
+          460
+        ],
+        "webhookId": "a7e61c18-3733-44f0-bd47-07d6b74dd708"
+      }
+    ],
+    "connections": {
+      "GetCover": {
+        "main": [
+          [
+            {
+              "node": "下载完成",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Radarr": {
+        "main": [
+          [
+            {
+              "node": "GetCover",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
+  "activeVersionId": "4a99327a-c281-4e43-bbdd-12e9a03df427",
   "connections": {
     "GetCover": {
       "main": [
