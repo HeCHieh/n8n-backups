@@ -1,5 +1,131 @@
 {
   "active": true,
+  "activeVersion": {
+    "updatedAt": "2025-11-26T12:53:20.968Z",
+    "createdAt": "2025-11-26T12:53:20.968Z",
+    "versionId": "505cc245-4e1f-445a-a677-85de8ebbf4f1",
+    "workflowId": "xC3l80k2IbwGHGGl",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "xarr-notify/sonarr",
+          "responseMode": "lastNode",
+          "responseData": "noData",
+          "options": {}
+        },
+        "id": "e9984b05-9d4e-4598-89bf-46068bbba72e",
+        "name": "Sonarr",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          500,
+          460
+        ],
+        "webhookId": "bda5faf8-78e8-41fc-a672-cf9e6f1fa66c"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpQueryAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\"msgtype\":\"news\",\"news\":{\"articles\":[{\"title\":\"{{ $json[\"tv_results\"][0][\"name\"] }}\",\"description\":\"第{{ $('Sonarr').item.json[\"body\"][\"episodes\"][0][\"seasonNumber\"] }}季第{{ $('Sonarr').item.json[\"body\"][\"episodes\"][0][\"episodeNumber\"] }}集下载完成\",\"url\":\"infuse://\",\"picurl\":\"https://image.tmdb.org/t/p/original{{ $json[\"tv_results\"][0][\"backdrop_path\"] }}\"}]}}",
+          "options": {}
+        },
+        "id": "80286bbe-3638-4e61-9418-a8e6d7bd796d",
+        "name": "下载完成",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          940,
+          460
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "httpQueryAuth": {
+            "id": "dw4OAyEOXlllAsX2",
+            "name": "qq enterprise bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "=https://api.themoviedb.org/3/find/{{ $json.body.series.tvdbId }}",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "external_source",
+                "value": "tvdb_id"
+              },
+              {
+                "name": "language",
+                "value": "zh-CN"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "60d134c0-086d-48e4-a319-c909170e8696",
+        "name": "GetCover",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          720,
+          460
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "dIphhzWGT80hKx0I",
+            "name": "TMDB"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Sonarr": {
+        "main": [
+          [
+            {
+              "node": "GetCover",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GetCover": {
+        "main": [
+          [
+            {
+              "node": "下载完成",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null
+  },
+  "activeVersionId": "505cc245-4e1f-445a-a677-85de8ebbf4f1",
   "connections": {
     "Sonarr": {
       "main": [
