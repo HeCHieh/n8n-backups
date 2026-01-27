@@ -1,0 +1,436 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-01-27T16:25:31.000Z",
+    "createdAt": "2026-01-27T16:25:13.237Z",
+    "versionId": "86b4f095-a202-4151-b054-cc56bee48246",
+    "workflowId": "m0CJdegYmUf3xBzd",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {}
+            ]
+          }
+        },
+        "id": "f8bfdba9-621a-446b-bee6-1658cac12105",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1136,
+          1296
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://rousi.pro/api/points/attendance",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "httpBearerAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\"mode\":\"random\"}",
+          "options": {}
+        },
+        "id": "58afb3d3-2721-466d-b28f-649d77455d16",
+        "name": "签到",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -816,
+          1296
+        ],
+        "alwaysOutputData": false,
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "FO2vsxIJVzgZYH9l",
+            "name": "rousi cookie"
+          },
+          "httpBearerAuth": {
+            "id": "Oyth1TZ8QLrrmCtb",
+            "name": "rousi pro"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpQueryAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"{{ $json.data.message }}\"\n    }\n}",
+          "options": {}
+        },
+        "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
+        "name": "签到完成",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -48,
+          1088
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "httpQueryAuth": {
+            "id": "dw4OAyEOXlllAsX2",
+            "name": "qq enterprise bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "number": [
+              {
+                "value1": "={{ $json.code }}",
+                "operation": "equal"
+              }
+            ]
+          }
+        },
+        "id": "d7572690-c7d1-4efb-90b9-12613131c0b6",
+        "name": "IF",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          -480,
+          1120
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpQueryAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi pro签到失败，请人工签到\"\n    }\n}",
+          "options": {}
+        },
+        "id": "113ff61e-d27c-4032-af04-ad93dd850f27",
+        "name": "签到失败",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -48,
+          1312
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "httpQueryAuth": {
+            "id": "dw4OAyEOXlllAsX2",
+            "name": "qq enterprise bot"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "签到",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF": {
+        "main": [
+          [
+            {
+              "node": "签到完成",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "签到失败",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "签到": {
+        "main": [
+          [
+            {
+              "node": "IF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "签到失败",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "何 杰",
+    "name": "Version 86b4f095",
+    "description": "",
+    "autosaved": true
+  },
+  "activeVersionId": "86b4f095-a202-4151-b054-cc56bee48246",
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "签到",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "签到完成",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "签到失败",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "签到": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "签到失败",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-01-27T12:34:02.087Z",
+  "id": "m0CJdegYmUf3xBzd",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "rousi pro定时签到",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "f8bfdba9-621a-446b-bee6-1658cac12105",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1136,
+        1296
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rousi.pro/api/points/attendance",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"mode\":\"random\"}",
+        "options": {}
+      },
+      "id": "58afb3d3-2721-466d-b28f-649d77455d16",
+      "name": "签到",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -816,
+        1296
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "FO2vsxIJVzgZYH9l",
+          "name": "rousi cookie"
+        },
+        "httpBearerAuth": {
+          "id": "Oyth1TZ8QLrrmCtb",
+          "name": "rousi pro"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"{{ $json.data.message }}\"\n    }\n}",
+        "options": {}
+      },
+      "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
+      "name": "签到完成",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -48,
+        1088
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "dw4OAyEOXlllAsX2",
+          "name": "qq enterprise bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.code }}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "d7572690-c7d1-4efb-90b9-12613131c0b6",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi pro签到失败，请人工签到\"\n    }\n}",
+        "options": {}
+      },
+      "id": "113ff61e-d27c-4032-af04-ad93dd850f27",
+      "name": "签到失败",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -48,
+        1312
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "dw4OAyEOXlllAsX2",
+          "name": "qq enterprise bot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-01-27T12:34:02.088Z",
+      "createdAt": "2026-01-27T12:34:02.088Z",
+      "role": "workflow:owner",
+      "workflowId": "m0CJdegYmUf3xBzd",
+      "projectId": "JbenHI1ztIuTmdWQ"
+    }
+  ],
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": [],
+      "recurrenceRules": []
+    }
+  },
+  "tags": [
+    {
+      "updatedAt": "2023-08-22T03:36:30.239Z",
+      "createdAt": "2023-08-22T03:36:30.239Z",
+      "id": "YdllD5VmZvjnL63L",
+      "name": "PT签到"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-01-27T16:25:13.237Z",
+  "versionId": "86b4f095-a202-4151-b054-cc56bee48246"
+}
