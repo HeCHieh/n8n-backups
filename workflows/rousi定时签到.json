@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2025-11-26T12:53:20.968Z",
-    "createdAt": "2025-11-26T12:53:20.968Z",
-    "versionId": "6f44c294-cc59-42f2-8e90-163f2b3825c3",
+    "updatedAt": "2026-01-27T12:46:00.000Z",
+    "createdAt": "2026-01-27T12:45:44.888Z",
+    "versionId": "73cf9cea-6073-44e5-b7a8-daabb7bf7495",
     "workflowId": "DlfkpcNu0HKHgY4J",
     "nodes": [
       {
@@ -222,12 +222,12 @@
         ]
       }
     },
-    "authors": "system migration",
-    "name": null,
-    "description": null,
+    "authors": "何 杰",
+    "name": "Version 73cf9cea",
+    "description": "",
     "autosaved": false
   },
-  "activeVersionId": "6f44c294-cc59-42f2-8e90-163f2b3825c3",
+  "activeVersionId": "73cf9cea-6073-44e5-b7a8-daabb7bf7495",
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -454,7 +454,8 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "availableInMCP": false
   },
   "shared": [
     {
@@ -480,6 +481,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-06-18T16:35:40.000Z",
-  "versionId": "6f44c294-cc59-42f2-8e90-163f2b3825c3"
+  "updatedAt": "2026-01-27T12:45:44.000Z",
+  "versionId": "73cf9cea-6073-44e5-b7a8-daabb7bf7495"
 }
