@@ -382,7 +382,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi pro签到失败，请人工签到\"\n    }\n}",
+        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"{{ $json.error.description }}\"\n    }\n}",
         "options": {}
       },
       "id": "113ff61e-d27c-4032-af04-ad93dd850f27",
@@ -431,6 +431,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2026-01-27T16:25:13.237Z",
-  "versionId": "86b4f095-a202-4151-b054-cc56bee48246"
+  "updatedAt": "2026-02-07T15:31:32.537Z",
+  "versionId": "f8988dce-9881-4e3c-af32-b5cc35068c25"
 }
