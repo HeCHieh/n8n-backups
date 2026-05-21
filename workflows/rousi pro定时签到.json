@@ -1,16 +1,18 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-01-27T16:25:31.000Z",
-    "createdAt": "2026-01-27T16:25:13.237Z",
-    "versionId": "86b4f095-a202-4151-b054-cc56bee48246",
+    "updatedAt": "2026-05-21T02:17:41.000Z",
+    "createdAt": "2026-05-21T02:17:35.472Z",
+    "versionId": "2c75cf29-367d-4faa-ae46-ce938602a605",
     "workflowId": "m0CJdegYmUf3xBzd",
     "nodes": [
       {
         "parameters": {
           "rule": {
             "interval": [
-              {}
+              {
+                "triggerAtMinute": 3
+              }
             ]
           }
         },
@@ -128,7 +130,7 @@
           },
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"rousi pro签到失败，请人工签到\"\n    }\n}",
+          "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"{{ $json.error.description }}\"\n    }\n}",
           "options": {}
         },
         "id": "113ff61e-d27c-4032-af04-ad93dd850f27",
@@ -198,11 +200,11 @@
       }
     },
     "authors": "何 杰",
-    "name": "Version 86b4f095",
+    "name": "Version 2c75cf29",
     "description": "",
     "autosaved": true
   },
-  "activeVersionId": "86b4f095-a202-4151-b054-cc56bee48246",
+  "activeVersionId": "2c75cf29-367d-4faa-ae46-ce938602a605",
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -264,7 +266,9 @@
       "parameters": {
         "rule": {
           "interval": [
-            {}
+            {
+              "triggerAtMinute": 3
+            }
           ]
         }
       },
@@ -405,7 +409,8 @@
   "pinData": {},
   "settings": {
     "executionOrder": "v1",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "binaryMode": "separate"
   },
   "shared": [
     {
@@ -431,6 +436,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2026-02-07T15:31:32.537Z",
-  "versionId": "f8988dce-9881-4e3c-af32-b5cc35068c25"
+  "updatedAt": "2026-05-21T02:17:35.471Z",
+  "versionId": "2c75cf29-367d-4faa-ae46-ce938602a605"
 }
