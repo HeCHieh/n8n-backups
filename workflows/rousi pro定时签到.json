@@ -262,6 +262,7 @@
     "templateCredsSetupCompleted": true
   },
   "name": "rousi pro定时签到",
+  "nodeGroups": [],
   "nodes": [
     {
       "parameters": {
