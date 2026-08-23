@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-05-21T02:17:41.000Z",
-    "createdAt": "2026-05-21T02:17:35.472Z",
-    "versionId": "2c75cf29-367d-4faa-ae46-ce938602a605",
+    "updatedAt": "2026-08-23T11:18:01.000Z",
+    "createdAt": "2026-08-23T11:17:46.996Z",
+    "versionId": "53738bd3-333f-419b-addb-e8b35967b7a5",
     "workflowId": "m0CJdegYmUf3xBzd",
     "nodes": [
       {
@@ -29,8 +29,23 @@
         "parameters": {
           "method": "POST",
           "url": "https://rousi.pro/api/points/attendance",
-          "authentication": "predefinedCredentialType",
-          "nodeCredentialType": "httpBearerAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "x-csrf-token",
+                "value": "mNs9C1aSNbujKvGYT67FiKovTq3b6_Df948KREI6jrM"
+              },
+              {
+                "name": "Cookie",
+                "value": "="
+              },
+              {
+                "name": "Referer",
+                "value": "https://rousi.pro/"
+              }
+            ]
+          },
           "sendBody": true,
           "specifyBody": "json",
           "jsonBody": "{\"mode\":\"random\"}",
@@ -45,16 +60,6 @@
           1296
         ],
         "alwaysOutputData": false,
-        "credentials": {
-          "httpHeaderAuth": {
-            "id": "FO2vsxIJVzgZYH9l",
-            "name": "rousi cookie"
-          },
-          "httpBearerAuth": {
-            "id": "Oyth1TZ8QLrrmCtb",
-            "name": "rousi pro"
-          }
-        },
         "onError": "continueErrorOutput"
       },
       {
@@ -201,11 +206,11 @@
     },
     "nodeGroups": [],
     "authors": "何 杰",
-    "name": "Version 2c75cf29",
+    "name": "Version 53738bd3",
     "description": "",
     "autosaved": true
   },
-  "activeVersionId": "2c75cf29-367d-4faa-ae46-ce938602a605",
+  "activeVersionId": "53738bd3-333f-419b-addb-e8b35967b7a5",
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -287,8 +292,23 @@
       "parameters": {
         "method": "POST",
         "url": "https://rousi.pro/api/points/attendance",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-csrf-token",
+              "value": "mNs9C1aSNbujKvGYT67FiKovTq3b6_Df948KREI6jrM"
+            },
+            {
+              "name": "Cookie",
+              "value": "="
+            },
+            {
+              "name": "Referer",
+              "value": "https://rousi.pro/"
+            }
+          ]
+        },
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "{\"mode\":\"random\"}",
@@ -303,16 +323,6 @@
         1296
       ],
       "alwaysOutputData": false,
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "FO2vsxIJVzgZYH9l",
-          "name": "rousi cookie"
-        },
-        "httpBearerAuth": {
-          "id": "Oyth1TZ8QLrrmCtb",
-          "name": "rousi pro"
-        }
-      },
       "onError": "continueErrorOutput"
     },
     {
@@ -443,6 +453,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2026-05-21T02:17:35.471Z",
-  "versionId": "2c75cf29-367d-4faa-ae46-ce938602a605"
+  "updatedAt": "2026-08-23T11:17:58.736Z",
+  "versionId": "53738bd3-333f-419b-addb-e8b35967b7a5"
 }
