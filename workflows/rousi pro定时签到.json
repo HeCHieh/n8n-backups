@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-08-23T11:18:01.000Z",
-    "createdAt": "2026-08-23T11:17:46.996Z",
-    "versionId": "53738bd3-333f-419b-addb-e8b35967b7a5",
+    "updatedAt": "2026-08-24T15:31:43.000Z",
+    "createdAt": "2026-08-24T15:31:36.200Z",
+    "versionId": "f0e8a369-3b71-477e-b3f7-e802c766aad3",
     "workflowId": "m0CJdegYmUf3xBzd",
     "nodes": [
       {
@@ -28,21 +28,25 @@
       {
         "parameters": {
           "method": "POST",
-          "url": "https://rousi.pro/api/points/attendance",
+          "url": "https://rousi.pro/api/v1/me/attendance",
           "sendHeaders": true,
           "headerParameters": {
             "parameters": [
               {
-                "name": "x-csrf-token",
-                "value": "mNs9C1aSNbujKvGYT67FiKovTq3b6_Df948KREI6jrM"
+                "name": "referer",
+                "value": "https://rousi.pro"
               },
               {
-                "name": "Cookie",
-                "value": "="
+                "name": "cookie",
+                "value": "__Host-peergo_session=7Id8BRkOeh3NnKvLe21cwg17C-7GOmF-GM3R3vtySvc"
               },
               {
-                "name": "Referer",
-                "value": "https://rousi.pro/"
+                "name": "sec-ch-ua",
+                "value": "\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Google Chrome\";v=\"150\""
+              },
+              {
+                "name": "user-agent",
+                "value": " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
               }
             ]
           },
@@ -206,11 +210,11 @@
     },
     "nodeGroups": [],
     "authors": "何 杰",
-    "name": "Version 53738bd3",
+    "name": "Version f0e8a369",
     "description": "",
-    "autosaved": true
+    "autosaved": false
   },
-  "activeVersionId": "53738bd3-333f-419b-addb-e8b35967b7a5",
+  "activeVersionId": "f0e8a369-3b71-477e-b3f7-e802c766aad3",
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -291,21 +295,25 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://rousi.pro/api/points/attendance",
+        "url": "https://rousi.pro/api/v1/me/attendance",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
-              "name": "x-csrf-token",
-              "value": "mNs9C1aSNbujKvGYT67FiKovTq3b6_Df948KREI6jrM"
+              "name": "referer",
+              "value": "https://rousi.pro"
             },
             {
-              "name": "Cookie",
-              "value": "="
+              "name": "cookie",
+              "value": "__Host-peergo_session=7Id8BRkOeh3NnKvLe21cwg17C-7GOmF-GM3R3vtySvc"
             },
             {
-              "name": "Referer",
-              "value": "https://rousi.pro/"
+              "name": "sec-ch-ua",
+              "value": "\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Google Chrome\";v=\"150\""
+            },
+            {
+              "name": "user-agent",
+              "value": " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
             }
           ]
         },
@@ -453,6 +461,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2026-08-23T11:17:58.736Z",
-  "versionId": "53738bd3-333f-419b-addb-e8b35967b7a5"
+  "updatedAt": "2026-08-24T15:31:36.199Z",
+  "versionId": "f0e8a369-3b71-477e-b3f7-e802c766aad3"
 }
