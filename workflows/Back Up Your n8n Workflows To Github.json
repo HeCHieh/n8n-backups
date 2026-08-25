@@ -1,8 +1,6 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2025-11-26T12:53:20.968Z",
-    "createdAt": "2025-11-26T12:53:20.968Z",
     "versionId": "9df09034-ee32-407b-b844-d931bafa89a0",
     "workflowId": "KkGZhTTm6YKDujUr",
     "nodes": [
@@ -488,7 +486,9 @@
     "authors": "system migration",
     "name": null,
     "description": null,
-    "autosaved": false
+    "autosaved": false,
+    "createdAt": "2025-11-26T12:53:20.968Z",
+    "updatedAt": "2025-11-26T12:53:20.968Z"
   },
   "activeVersionId": "9df09034-ee32-407b-b844-d931bafa89a0",
   "connections": {
@@ -982,20 +982,20 @@
   },
   "shared": [
     {
-      "updatedAt": "2023-08-22T03:35:25.928Z",
-      "createdAt": "2023-08-22T03:35:25.928Z",
       "role": "workflow:owner",
       "workflowId": "KkGZhTTm6YKDujUr",
-      "projectId": "JbenHI1ztIuTmdWQ"
+      "projectId": "JbenHI1ztIuTmdWQ",
+      "createdAt": "2023-08-22T03:35:25.928Z",
+      "updatedAt": "2023-08-22T03:35:25.928Z"
     }
   ],
   "staticData": null,
   "tags": [
     {
-      "updatedAt": "2023-08-22T03:35:11.499Z",
-      "createdAt": "2023-08-22T03:35:11.499Z",
       "id": "AhqtC9RfYW53tz1B",
-      "name": "备份"
+      "name": "备份",
+      "createdAt": "2023-08-22T03:35:11.499Z",
+      "updatedAt": "2023-08-22T03:35:11.499Z"
     }
   ],
   "triggerCount": 1,
