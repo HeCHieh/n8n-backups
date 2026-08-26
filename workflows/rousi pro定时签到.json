@@ -255,24 +255,6 @@
       "main": [
         [
           {
-            "node": "IF",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "签到失败",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "IF": {
-      "main": [
-        [
-          {
             "node": "签到完成",
             "type": "main",
             "index": 0
@@ -356,7 +338,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        -688,
+        -496,
         1296
       ],
       "credentials": {
@@ -405,26 +387,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "number": [
-            {
-              "value1": "={{ $json.code }}",
-              "operation": "equal"
-            }
-          ]
-        }
-      },
-      "id": "d7572690-c7d1-4efb-90b9-12613131c0b6",
-      "name": "IF",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -368,
-        1120
-      ]
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
         "authentication": "genericCredentialType",
@@ -469,7 +431,7 @@
       "type": "n8n-nodes-base.crypto",
       "typeVersion": 2,
       "position": [
-        -976,
+        -848,
         1296
       ]
     }
@@ -509,6 +471,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2026-08-25T10:22:30.585Z",
-  "versionId": "d6f969b8-c5d6-4f69-a491-2c721c4e0404"
+  "updatedAt": "2026-08-26T02:34:24.297Z",
+  "versionId": "cbe43f0d-85d1-49dd-8b8c-7b1806c84375"
 }
