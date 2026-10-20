@@ -1,7 +1,7 @@
 {
   "active": true,
   "activeVersion": {
-    "versionId": "cbe43f0d-85d1-49dd-8b8c-7b1806c84375",
+    "versionId": "7cd83130-10a0-4239-8450-795098c88110",
     "workflowId": "m0CJdegYmUf3xBzd",
     "nodes": [
       {
@@ -19,121 +19,9 @@
         "type": "n8n-nodes-base.scheduleTrigger",
         "typeVersion": 1.1,
         "position": [
-          -1184,
-          1296
+          -1616,
+          960
         ]
-      },
-      {
-        "parameters": {
-          "method": "POST",
-          "url": "https://rousi.pro/api/v1/me/attendance",
-          "authentication": "genericCredentialType",
-          "genericAuthType": "httpTemplatedCustomAuth",
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "referer",
-                "value": "https://rousi.pro"
-              },
-              {
-                "name": "idempotency-key",
-                "value": "={{ $json.idempotency_key }}"
-              }
-            ]
-          },
-          "sendBody": true,
-          "specifyBody": "json",
-          "jsonBody": "{\"mode\":\"random\"}",
-          "options": {}
-        },
-        "id": "58afb3d3-2721-466d-b28f-649d77455d16",
-        "name": "签到",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.1,
-        "position": [
-          -496,
-          1296
-        ],
-        "credentials": {
-          "httpTemplatedCustomAuth": {
-            "id": "OM4Qk0DSw6xmtf8Z",
-            "name": "rousi pro签到凭证"
-          }
-        },
-        "onError": "continueErrorOutput"
-      },
-      {
-        "parameters": {
-          "method": "POST",
-          "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
-          "authentication": "genericCredentialType",
-          "genericAuthType": "httpQueryAuth",
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "Content-Type",
-                "value": "application/json"
-              }
-            ]
-          },
-          "sendBody": true,
-          "specifyBody": "json",
-          "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"签到失败！\"\n    }\n}",
-          "options": {}
-        },
-        "id": "113ff61e-d27c-4032-af04-ad93dd850f27",
-        "name": "签到失败",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.1,
-        "position": [
-          -48,
-          1312
-        ],
-        "retryOnFail": true,
-        "credentials": {
-          "httpQueryAuth": {
-            "id": "dw4OAyEOXlllAsX2",
-            "name": "qq enterprise bot"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "method": "POST",
-          "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
-          "authentication": "genericCredentialType",
-          "genericAuthType": "httpQueryAuth",
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "Content-Type",
-                "value": "application/json"
-              }
-            ]
-          },
-          "sendBody": true,
-          "specifyBody": "json",
-          "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"签到成功！\"\n    }\n}",
-          "options": {}
-        },
-        "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
-        "name": "签到完成",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.1,
-        "position": [
-          -48,
-          1088
-        ],
-        "retryOnFail": true,
-        "credentials": {
-          "httpQueryAuth": {
-            "id": "dw4OAyEOXlllAsX2",
-            "name": "qq enterprise bot"
-          }
-        }
       },
       {
         "parameters": {
@@ -145,9 +33,346 @@
         "type": "n8n-nodes-base.crypto",
         "typeVersion": 2,
         "position": [
-          -848,
-          1296
+          -1360,
+          960
         ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const state = $getWorkflowStaticData('global');\nif (/^(verification-|mock_)/.test(String(state.rousiSession?.csrf_token || ''))) delete state.rousiSession;\nconst s = state.rousiSession || {};\nconst valid = !!s.cookie && !!s.csrf_token && (!s.expires_at || Date.parse(s.expires_at) > Date.now() + 60000);\nreturn [{json: {cookie: s.cookie || '', csrf_token: s.csrf_token || '', needsLogin: !valid}}];"
+        },
+        "id": "512d6588-32e1-420c-a1f9-a4236af174e6",
+        "name": "读取登录会话",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1088,
+          960
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.needsLogin }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "718ee95f-324e-4191-95cb-f07f6a602288",
+        "name": "需要登录",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -848,
+          960
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://rousi.pro/api/v1/session",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpTemplatedCustomAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "referer",
+                "value": "https://rousi.pro"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\"remember_me\":true}",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "id": "e36d1bcb-4535-4d4a-972c-0539050b6afa",
+        "name": "账户登录",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -640,
+          640
+        ],
+        "credentials": {
+          "httpTemplatedCustomAuth": {
+            "id": "OM4Qk0DSw6xmtf8Z",
+            "name": "rousi pro签到凭证"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('登录响应缺少 csrf_token 或 Set-Cookie；请确认实际会话 token 的返回位置');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
+        },
+        "id": "d0c9f927-f821-455d-aa22-24a7dffb8839",
+        "name": "保存登录会话",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -176,
+          624
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://rousi.pro/api/v1/me/attendance",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "referer",
+                "value": "https://rousi.pro"
+              },
+              {
+                "name": "idempotency-key",
+                "value": "={{ $(\"UUID\").first().json.idempotency_key }}"
+              },
+              {
+                "name": "Cookie",
+                "value": "={{ $json.cookie }}"
+              },
+              {
+                "name": "X-CSRF-Token",
+                "value": "={{ $json.csrf_token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\"mode\":\"random\"}",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true,
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "id": "58afb3d3-2721-466d-b28f-649d77455d16",
+        "name": "签到",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -416,
+          976
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ [401, 403, 419].includes(Number($json.statusCode)) }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "108c1e38-1b59-460c-9311-b53747770d12",
+        "name": "认证失效",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -48,
+          896
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://rousi.pro/api/v1/session",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpTemplatedCustomAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\"remember_me\":true}",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "id": "58ab83f1-6986-4176-9de8-51c539718da6",
+        "name": "失效后重新登录",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          240,
+          1184
+        ],
+        "credentials": {
+          "httpTemplatedCustomAuth": {
+            "id": "OM4Qk0DSw6xmtf8Z",
+            "name": "rousi pro签到凭证"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('重新登录响应缺少 csrf_token 或 Set-Cookie');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
+        },
+        "id": "7e310694-5233-4f0a-941c-6e475e2696db",
+        "name": "保存更新会话",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          288,
+          2032
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://rousi.pro/api/v1/me/attendance",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "referer",
+                "value": "https://rousi.pro"
+              },
+              {
+                "name": "idempotency-key",
+                "value": "={{ $(\"UUID\").first().json.idempotency_key }}"
+              },
+              {
+                "name": "Cookie",
+                "value": "={{ $json.cookie }}"
+              },
+              {
+                "name": "X-CSRF-Token",
+                "value": "={{ $json.csrf_token }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "{\"mode\":\"random\"}",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true,
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "id": "8ba7abe8-b559-4bb5-9588-37c74ee5a7b4",
+        "name": "重新签到一次",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          832,
+          2000
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "notification-content",
+                "name": "content",
+                "type": "string",
+                "value": "={{ (() => {\n        const r = $json;\n        const b = r.body ?? r;\n        const status = Number(r.statusCode);\n        if (status === 409 && b.code === 'attendance_already_claimed') return '今天已签到，无需重复领取。';\n        if (status >= 200 && status < 300 && b.success !== false && !r.error) {\n          return ['签到成功！', b.attendance_date != null ? '签到日期：' + b.attendance_date : '', b.total_reward != null ? '本次获得：' + b.total_reward + ' 积分' : '本次积分：接口未返回', b.base_reward != null ? '基础奖励：' + b.base_reward + ' 积分' : '', b.streak_reward != null ? '连续签到奖励：' + b.streak_reward + ' 积分' : '', b.experience_reward != null ? '获得经验：' + b.experience_reward : '', b.current_streak != null ? '连续签到：' + b.current_streak + ' 天' : ''].filter(Boolean).join(String.fromCharCode(10));\n        }\n        const step = $prevNode.name === '认证失效' ? '签到' : $prevNode.name;\n        const reason = b.code || r.error?.code || 'request_failed';\n        const detail = b.detail || b.message || (typeof r.error === 'string' ? r.error : r.error?.message) || r.message || '接口未返回错误说明';\n        return ['签到失败！', '失败步骤：' + step, Number.isFinite(status) ? 'HTTP 状态：' + status : '', '错误代码：' + reason, '错误说明：' + String(detail).slice(0, 500)].filter(Boolean).join(String.fromCharCode(10));\n      })() }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4dbdf469-9788-4e7e-8b95-d8a4d63dc1b0",
+        "name": "整理签到结果",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          720,
+          928
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpQueryAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": {{ JSON.stringify($json.content) }}\n    }\n}",
+          "options": {}
+        },
+        "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
+        "name": "企业微信通知",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          992,
+          928
+        ],
+        "retryOnFail": true,
+        "credentials": {
+          "httpQueryAuth": {
+            "id": "dw4OAyEOXlllAsX2",
+            "name": "qq enterprise bot"
+          }
+        }
       }
     ],
     "connections": {
@@ -162,29 +387,177 @@
           ]
         ]
       },
-      "签到": {
+      "UUID": {
         "main": [
           [
             {
-              "node": "签到完成",
-              "type": "main",
-              "index": 0
-            }
-          ],
-          [
-            {
-              "node": "签到失败",
+              "node": "读取登录会话",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "UUID": {
+      "读取登录会话": {
+        "main": [
+          [
+            {
+              "node": "需要登录",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "需要登录": {
+        "main": [
+          [
+            {
+              "node": "账户登录",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "签到",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "账户登录": {
+        "main": [
+          [
+            {
+              "node": "保存登录会话",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "整理签到结果",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "保存登录会话": {
         "main": [
           [
             {
               "node": "签到",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "整理签到结果",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "签到": {
+        "main": [
+          [
+            {
+              "node": "认证失效",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "整理签到结果",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "认证失效": {
+        "main": [
+          [
+            {
+              "node": "失效后重新登录",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "整理签到结果",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "失效后重新登录": {
+        "main": [
+          [
+            {
+              "node": "保存更新会话",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "整理签到结果",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "保存更新会话": {
+        "main": [
+          [
+            {
+              "node": "重新签到一次",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "整理签到结果",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "重新签到一次": {
+        "main": [
+          [
+            {
+              "node": "整理签到结果",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "整理签到结果",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "整理签到结果": {
+        "main": [
+          [
+            {
+              "node": "企业微信通知",
               "type": "main",
               "index": 0
             }
@@ -194,13 +567,13 @@
     },
     "nodeGroups": [],
     "authors": "何 杰",
-    "name": "Version cbe43f0d",
+    "name": "Version 7cd83130",
     "description": "",
     "autosaved": true,
-    "createdAt": "2026-08-26T02:34:24.298Z",
-    "updatedAt": "2026-08-26T03:15:17.000Z"
+    "createdAt": "2026-10-20T11:51:38.129Z",
+    "updatedAt": "2026-10-20T11:52:15.000Z"
   },
-  "activeVersionId": "cbe43f0d-85d1-49dd-8b8c-7b1806c84375",
+  "activeVersionId": "7cd83130-10a0-4239-8450-795098c88110",
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -213,29 +586,177 @@
         ]
       ]
     },
-    "签到": {
+    "UUID": {
       "main": [
         [
           {
-            "node": "签到完成",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "签到失败",
+            "node": "读取登录会话",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "UUID": {
+    "读取登录会话": {
+      "main": [
+        [
+          {
+            "node": "需要登录",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "需要登录": {
+      "main": [
+        [
+          {
+            "node": "账户登录",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "签到",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "账户登录": {
+      "main": [
+        [
+          {
+            "node": "保存登录会话",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "整理签到结果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "保存登录会话": {
       "main": [
         [
           {
             "node": "签到",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "整理签到结果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "签到": {
+      "main": [
+        [
+          {
+            "node": "认证失效",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "整理签到结果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "认证失效": {
+      "main": [
+        [
+          {
+            "node": "失效后重新登录",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "整理签到结果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "失效后重新登录": {
+      "main": [
+        [
+          {
+            "node": "保存更新会话",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "整理签到结果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "保存更新会话": {
+      "main": [
+        [
+          {
+            "node": "重新签到一次",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "整理签到结果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "重新签到一次": {
+      "main": [
+        [
+          {
+            "node": "整理签到结果",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "整理签到结果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "整理签到结果": {
+      "main": [
+        [
+          {
+            "node": "企业微信通知",
             "type": "main",
             "index": 0
           }
@@ -267,121 +788,9 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
-        -1184,
-        1296
+        -1616,
+        960
       ]
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://rousi.pro/api/v1/me/attendance",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpTemplatedCustomAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "referer",
-              "value": "https://rousi.pro"
-            },
-            {
-              "name": "idempotency-key",
-              "value": "={{ $json.idempotency_key }}"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "{\"mode\":\"random\"}",
-        "options": {}
-      },
-      "id": "58afb3d3-2721-466d-b28f-649d77455d16",
-      "name": "签到",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        -496,
-        1296
-      ],
-      "credentials": {
-        "httpTemplatedCustomAuth": {
-          "id": "OM4Qk0DSw6xmtf8Z",
-          "name": "rousi pro签到凭证"
-        }
-      },
-      "onError": "continueErrorOutput"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpQueryAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"签到失败！\"\n    }\n}",
-        "options": {}
-      },
-      "id": "113ff61e-d27c-4032-af04-ad93dd850f27",
-      "name": "签到失败",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        -48,
-        1312
-      ],
-      "retryOnFail": true,
-      "credentials": {
-        "httpQueryAuth": {
-          "id": "dw4OAyEOXlllAsX2",
-          "name": "qq enterprise bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpQueryAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": \"签到成功！\"\n    }\n}",
-        "options": {}
-      },
-      "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
-      "name": "签到完成",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        -48,
-        1088
-      ],
-      "retryOnFail": true,
-      "credentials": {
-        "httpQueryAuth": {
-          "id": "dw4OAyEOXlllAsX2",
-          "name": "qq enterprise bot"
-        }
-      }
     },
     {
       "parameters": {
@@ -393,9 +802,346 @@
       "type": "n8n-nodes-base.crypto",
       "typeVersion": 2,
       "position": [
-        -848,
-        1296
+        -1360,
+        960
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const state = $getWorkflowStaticData('global');\nif (/^(verification-|mock_)/.test(String(state.rousiSession?.csrf_token || ''))) delete state.rousiSession;\nconst s = state.rousiSession || {};\nconst valid = !!s.cookie && !!s.csrf_token && (!s.expires_at || Date.parse(s.expires_at) > Date.now() + 60000);\nreturn [{json: {cookie: s.cookie || '', csrf_token: s.csrf_token || '', needsLogin: !valid}}];"
+      },
+      "id": "512d6588-32e1-420c-a1f9-a4236af174e6",
+      "name": "读取登录会话",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1088,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.needsLogin }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "718ee95f-324e-4191-95cb-f07f6a602288",
+      "name": "需要登录",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -848,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rousi.pro/api/v1/session",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "referer",
+              "value": "https://rousi.pro"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"remember_me\":true}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "e36d1bcb-4535-4d4a-972c-0539050b6afa",
+      "name": "账户登录",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -640,
+        640
+      ],
+      "credentials": {
+        "httpTemplatedCustomAuth": {
+          "id": "OM4Qk0DSw6xmtf8Z",
+          "name": "rousi pro签到凭证"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('登录响应缺少 csrf_token 或 Set-Cookie；请确认实际会话 token 的返回位置');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
+      },
+      "id": "d0c9f927-f821-455d-aa22-24a7dffb8839",
+      "name": "保存登录会话",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        624
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rousi.pro/api/v1/me/attendance",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "referer",
+              "value": "https://rousi.pro"
+            },
+            {
+              "name": "idempotency-key",
+              "value": "={{ $(\"UUID\").first().json.idempotency_key }}"
+            },
+            {
+              "name": "Cookie",
+              "value": "={{ $json.cookie }}"
+            },
+            {
+              "name": "X-CSRF-Token",
+              "value": "={{ $json.csrf_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"mode\":\"random\"}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "58afb3d3-2721-466d-b28f-649d77455d16",
+      "name": "签到",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -416,
+        976
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ [401, 403, 419].includes(Number($json.statusCode)) }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "108c1e38-1b59-460c-9311-b53747770d12",
+      "name": "认证失效",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -48,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rousi.pro/api/v1/session",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"remember_me\":true}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "58ab83f1-6986-4176-9de8-51c539718da6",
+      "name": "失效后重新登录",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        240,
+        1184
+      ],
+      "credentials": {
+        "httpTemplatedCustomAuth": {
+          "id": "OM4Qk0DSw6xmtf8Z",
+          "name": "rousi pro签到凭证"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('重新登录响应缺少 csrf_token 或 Set-Cookie');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
+      },
+      "id": "7e310694-5233-4f0a-941c-6e475e2696db",
+      "name": "保存更新会话",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        2032
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rousi.pro/api/v1/me/attendance",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "referer",
+              "value": "https://rousi.pro"
+            },
+            {
+              "name": "idempotency-key",
+              "value": "={{ $(\"UUID\").first().json.idempotency_key }}"
+            },
+            {
+              "name": "Cookie",
+              "value": "={{ $json.cookie }}"
+            },
+            {
+              "name": "X-CSRF-Token",
+              "value": "={{ $json.csrf_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"mode\":\"random\"}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "8ba7abe8-b559-4bb5-9588-37c74ee5a7b4",
+      "name": "重新签到一次",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        832,
+        2000
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "notification-content",
+              "name": "content",
+              "type": "string",
+              "value": "={{ (() => {\n        const r = $json;\n        const b = r.body ?? r;\n        const status = Number(r.statusCode);\n        if (status === 409 && b.code === 'attendance_already_claimed') return '今天已签到，无需重复领取。';\n        if (status >= 200 && status < 300 && b.success !== false && !r.error) {\n          return ['签到成功！', b.attendance_date != null ? '签到日期：' + b.attendance_date : '', b.total_reward != null ? '本次获得：' + b.total_reward + ' 积分' : '本次积分：接口未返回', b.base_reward != null ? '基础奖励：' + b.base_reward + ' 积分' : '', b.streak_reward != null ? '连续签到奖励：' + b.streak_reward + ' 积分' : '', b.experience_reward != null ? '获得经验：' + b.experience_reward : '', b.current_streak != null ? '连续签到：' + b.current_streak + ' 天' : ''].filter(Boolean).join(String.fromCharCode(10));\n        }\n        const step = $prevNode.name === '认证失效' ? '签到' : $prevNode.name;\n        const reason = b.code || r.error?.code || 'request_failed';\n        const detail = b.detail || b.message || (typeof r.error === 'string' ? r.error : r.error?.message) || r.message || '接口未返回错误说明';\n        return ['签到失败！', '失败步骤：' + step, Number.isFinite(status) ? 'HTTP 状态：' + status : '', '错误代码：' + reason, '错误说明：' + String(detail).slice(0, 500)].filter(Boolean).join(String.fromCharCode(10));\n      })() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4dbdf469-9788-4e7e-8b95-d8a4d63dc1b0",
+      "name": "整理签到结果",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        928
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": {{ JSON.stringify($json.content) }}\n    }\n}",
+        "options": {}
+      },
+      "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
+      "name": "企业微信通知",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        992,
+        928
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "dw4OAyEOXlllAsX2",
+          "name": "qq enterprise bot"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -422,6 +1168,13 @@
       "recurrenceRuleSignatures": [
         null
       ]
+    },
+    "global": {
+      "rousiSession": {
+        "cookie": "__Host-peergo_session=QtkHsREZceBtV6Hh7mOETBPYBjZQefsGuo7Q788D1So",
+        "csrf_token": "2TGlQ_-px-P_445x9rW0XjE-qOghUCGBGiIZjA3QNKk",
+        "expires_at": "2026-11-19T11:11:15.902626818Z"
+      }
     }
   },
   "tags": [
@@ -433,6 +1186,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2026-08-26T02:34:24.297Z",
-  "versionId": "cbe43f0d-85d1-49dd-8b8c-7b1806c84375"
+  "updatedAt": "2026-10-20T11:51:38.127Z",
+  "versionId": "7cd83130-10a0-4239-8450-795098c88110"
 }
