@@ -1,10 +1,18 @@
 {
   "active": true,
   "activeVersion": {
-    "versionId": "7cd83130-10a0-4239-8450-795098c88110",
+    "versionId": "f2b064c4-3833-4b86-9d0a-c89c9a803036",
     "workflowId": "m0CJdegYmUf3xBzd",
     "nodes": [
       {
+        "id": "f8bfdba9-621a-446b-bee6-1658cac12105",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1616,
+          960
+        ],
         "parameters": {
           "rule": {
             "interval": [
@@ -13,21 +21,9 @@
               }
             ]
           }
-        },
-        "id": "f8bfdba9-621a-446b-bee6-1658cac12105",
-        "name": "Schedule Trigger",
-        "type": "n8n-nodes-base.scheduleTrigger",
-        "typeVersion": 1.1,
-        "position": [
-          -1616,
-          960
-        ]
+        }
       },
       {
-        "parameters": {
-          "action": "generate",
-          "dataPropertyName": "idempotency_key"
-        },
         "id": "2bf2a3ed-0ecb-499a-921f-7e1812148036",
         "name": "UUID",
         "type": "n8n-nodes-base.crypto",
@@ -35,12 +31,13 @@
         "position": [
           -1360,
           960
-        ]
+        ],
+        "parameters": {
+          "action": "generate",
+          "dataPropertyName": "idempotency_key"
+        }
       },
       {
-        "parameters": {
-          "jsCode": "const state = $getWorkflowStaticData('global');\nif (/^(verification-|mock_)/.test(String(state.rousiSession?.csrf_token || ''))) delete state.rousiSession;\nconst s = state.rousiSession || {};\nconst valid = !!s.cookie && !!s.csrf_token && (!s.expires_at || Date.parse(s.expires_at) > Date.now() + 60000);\nreturn [{json: {cookie: s.cookie || '', csrf_token: s.csrf_token || '', needsLogin: !valid}}];"
-        },
         "id": "512d6588-32e1-420c-a1f9-a4236af174e6",
         "name": "读取登录会话",
         "type": "n8n-nodes-base.code",
@@ -48,9 +45,20 @@
         "position": [
           -1088,
           960
-        ]
+        ],
+        "parameters": {
+          "jsCode": "const state = $getWorkflowStaticData('global');\nif (/^(verification-|mock_)/.test(String(state.rousiSession?.csrf_token || ''))) delete state.rousiSession;\nconst s = state.rousiSession || {};\nconst valid = !!s.cookie && !!s.csrf_token && (!s.expires_at || Date.parse(s.expires_at) > Date.now() + 60000);\nreturn [{json: {cookie: s.cookie || '', csrf_token: s.csrf_token || '', needsLogin: !valid}}];"
+        }
       },
       {
+        "id": "718ee95f-324e-4191-95cb-f07f6a602288",
+        "name": "需要登录",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -848,
+          960
+        ],
         "parameters": {
           "conditions": {
             "options": {
@@ -72,17 +80,17 @@
             "combinator": "and"
           },
           "options": {}
-        },
-        "id": "718ee95f-324e-4191-95cb-f07f6a602288",
-        "name": "需要登录",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2.2,
-        "position": [
-          -848,
-          960
-        ]
+        }
       },
       {
+        "id": "e36d1bcb-4535-4d4a-972c-0539050b6afa",
+        "name": "账户登录",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          -640,
+          640
+        ],
         "parameters": {
           "method": "POST",
           "url": "https://rousi.pro/api/v1/session",
@@ -109,14 +117,6 @@
             }
           }
         },
-        "id": "e36d1bcb-4535-4d4a-972c-0539050b6afa",
-        "name": "账户登录",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.5,
-        "position": [
-          -640,
-          640
-        ],
         "credentials": {
           "httpTemplatedCustomAuth": {
             "id": "OM4Qk0DSw6xmtf8Z",
@@ -126,9 +126,6 @@
         "onError": "continueErrorOutput"
       },
       {
-        "parameters": {
-          "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('登录响应缺少 csrf_token 或 Set-Cookie；请确认实际会话 token 的返回位置');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
-        },
         "id": "d0c9f927-f821-455d-aa22-24a7dffb8839",
         "name": "保存登录会话",
         "type": "n8n-nodes-base.code",
@@ -137,9 +134,20 @@
           -176,
           624
         ],
+        "parameters": {
+          "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('登录响应缺少 csrf_token 或 Set-Cookie；请确认实际会话 token 的返回位置');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
+        },
         "onError": "continueErrorOutput"
       },
       {
+        "id": "58afb3d3-2721-466d-b28f-649d77455d16",
+        "name": "签到",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -416,
+          976
+        ],
         "parameters": {
           "method": "POST",
           "url": "https://rousi.pro/api/v1/me/attendance",
@@ -177,17 +185,17 @@
             }
           }
         },
-        "id": "58afb3d3-2721-466d-b28f-649d77455d16",
-        "name": "签到",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.1,
-        "position": [
-          -416,
-          976
-        ],
         "onError": "continueErrorOutput"
       },
       {
+        "id": "108c1e38-1b59-460c-9311-b53747770d12",
+        "name": "认证失效",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -48,
+          896
+        ],
         "parameters": {
           "conditions": {
             "options": {
@@ -209,17 +217,17 @@
             "combinator": "and"
           },
           "options": {}
-        },
-        "id": "108c1e38-1b59-460c-9311-b53747770d12",
-        "name": "认证失效",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2.2,
-        "position": [
-          -48,
-          896
-        ]
+        }
       },
       {
+        "id": "58ab83f1-6986-4176-9de8-51c539718da6",
+        "name": "失效后重新登录",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          240,
+          1184
+        ],
         "parameters": {
           "method": "POST",
           "url": "https://rousi.pro/api/v1/session",
@@ -237,14 +245,6 @@
             }
           }
         },
-        "id": "58ab83f1-6986-4176-9de8-51c539718da6",
-        "name": "失效后重新登录",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.5,
-        "position": [
-          240,
-          1184
-        ],
         "credentials": {
           "httpTemplatedCustomAuth": {
             "id": "OM4Qk0DSw6xmtf8Z",
@@ -254,9 +254,6 @@
         "onError": "continueErrorOutput"
       },
       {
-        "parameters": {
-          "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('重新登录响应缺少 csrf_token 或 Set-Cookie');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
-        },
         "id": "7e310694-5233-4f0a-941c-6e475e2696db",
         "name": "保存更新会话",
         "type": "n8n-nodes-base.code",
@@ -265,9 +262,20 @@
           288,
           2032
         ],
+        "parameters": {
+          "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('重新登录响应缺少 csrf_token 或 Set-Cookie');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
+        },
         "onError": "continueErrorOutput"
       },
       {
+        "id": "8ba7abe8-b559-4bb5-9588-37c74ee5a7b4",
+        "name": "重新签到一次",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          832,
+          2000
+        ],
         "parameters": {
           "method": "POST",
           "url": "https://rousi.pro/api/v1/me/attendance",
@@ -305,17 +313,17 @@
             }
           }
         },
-        "id": "8ba7abe8-b559-4bb5-9588-37c74ee5a7b4",
-        "name": "重新签到一次",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.5,
-        "position": [
-          832,
-          2000
-        ],
         "onError": "continueErrorOutput"
       },
       {
+        "id": "4dbdf469-9788-4e7e-8b95-d8a4d63dc1b0",
+        "name": "整理签到结果",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          720,
+          928
+        ],
         "parameters": {
           "assignments": {
             "assignments": [
@@ -328,17 +336,17 @@
             ]
           },
           "options": {}
-        },
-        "id": "4dbdf469-9788-4e7e-8b95-d8a4d63dc1b0",
-        "name": "整理签到结果",
-        "type": "n8n-nodes-base.set",
-        "typeVersion": 3.4,
-        "position": [
-          720,
-          928
-        ]
+        }
       },
       {
+        "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
+        "name": "企业微信通知",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          992,
+          928
+        ],
         "parameters": {
           "method": "POST",
           "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
@@ -358,21 +366,100 @@
           "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": {{ JSON.stringify($json.content) }}\n    }\n}",
           "options": {}
         },
-        "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
-        "name": "企业微信通知",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.1,
-        "position": [
-          992,
-          928
-        ],
-        "retryOnFail": true,
         "credentials": {
           "httpQueryAuth": {
             "id": "dw4OAyEOXlllAsX2",
             "name": "qq enterprise bot"
           }
+        },
+        "retryOnFail": true
+      },
+      {
+        "id": "f3bc95c4-b0c1-46e6-bb65-995e9ff3fb68",
+        "name": "准备同步 Cookie",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          704,
+          720
+        ],
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "sync-cookie",
+                "name": "cookie",
+                "type": "string",
+                "value": "={{ $json.cookie }}"
+              }
+            ]
+          },
+          "options": {}
         }
+      },
+      {
+        "id": "e95a2e14-1217-424a-b9e8-0fd3a8ec1a28",
+        "name": "读取 Prowlarr 配置",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          928,
+          720
+        ],
+        "parameters": {
+          "url": "http://192.168.31.13:9696/api/v1/indexer/24",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpTemplatedCustomAuth",
+          "options": {
+            "timeout": 15000,
+            "response": {
+              "response": {
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "credentials": {
+          "httpTemplatedCustomAuth": {
+            "id": "xg01BcWWP5TOznzC",
+            "name": "Prowlarr API 凭证 (何 杰)"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "id": "b2ff70dd-d04e-4aea-a033-f13d0899c0d4",
+        "name": "更新 Prowlarr Cookie",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.5,
+        "position": [
+          1152,
+          720
+        ],
+        "parameters": {
+          "method": "PUT",
+          "url": "http://192.168.31.13:9696/api/v1/indexer/24",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpTemplatedCustomAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ (() => { const config = $json; const cookie = $('准备同步 Cookie').item.json.cookie; if (Number(config.id) !== 24 || !Array.isArray(config.fields) || !config.fields.some(f => f.name === 'cookie')) throw new Error('索引器 24 配置缺少 cookie 字段，停止更新'); if (!cookie || /[\\r\\n]/.test(cookie)) throw new Error('新 Cookie 为空或格式无效，停止更新'); return {...config, fields: config.fields.map(f => f.name === 'cookie' ? {...f, value: cookie} : f)}; })() }}",
+          "options": {
+            "timeout": 20000,
+            "response": {
+              "response": {
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "credentials": {
+          "httpTemplatedCustomAuth": {
+            "id": "xg01BcWWP5TOznzC",
+            "name": "Prowlarr API 凭证 (何 杰)"
+          }
+        },
+        "onError": "continueErrorOutput"
       }
     ],
     "connections": {
@@ -452,6 +539,11 @@
               "node": "签到",
               "type": "main",
               "index": 0
+            },
+            {
+              "node": "准备同步 Cookie",
+              "type": "main",
+              "index": 0
             }
           ],
           [
@@ -524,6 +616,11 @@
               "node": "重新签到一次",
               "type": "main",
               "index": 0
+            },
+            {
+              "node": "准备同步 Cookie",
+              "type": "main",
+              "index": 0
             }
           ],
           [
@@ -563,17 +660,50 @@
             }
           ]
         ]
+      },
+      "准备同步 Cookie": {
+        "main": [
+          [
+            {
+              "node": "读取 Prowlarr 配置",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "读取 Prowlarr 配置": {
+        "main": [
+          [
+            {
+              "node": "更新 Prowlarr Cookie",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
-    "nodeGroups": [],
-    "authors": "何 杰",
-    "name": "Version 7cd83130",
+    "nodeGroups": [
+      {
+        "id": "14978610-bd3d-4efe-a65c-b8213548d22a",
+        "name": "同步搜索会话",
+        "nodeIds": [
+          "f3bc95c4-b0c1-46e6-bb65-995e9ff3fb68",
+          "e95a2e14-1217-424a-b9e8-0fd3a8ec1a28",
+          "b2ff70dd-d04e-4aea-a033-f13d0899c0d4"
+        ],
+        "description": "登录取得新会话后，保留索引器 24 的其他设置，仅更新其 Cookie；同步错误不阻断签到。"
+      }
+    ],
+    "authors": "何 杰 (with n8n Assistant)",
+    "name": "Version f2b064c4",
     "description": "",
-    "autosaved": true,
-    "createdAt": "2026-10-20T11:51:38.129Z",
-    "updatedAt": "2026-10-20T11:52:15.000Z"
+    "autosaved": false,
+    "createdAt": "2026-10-20T12:39:34.457Z",
+    "updatedAt": "2026-10-20T12:55:04.000Z"
   },
-  "activeVersionId": "7cd83130-10a0-4239-8450-795098c88110",
+  "activeVersionId": "f2b064c4-3833-4b86-9d0a-c89c9a803036",
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -651,6 +781,11 @@
             "node": "签到",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "准备同步 Cookie",
+            "type": "main",
+            "index": 0
           }
         ],
         [
@@ -723,6 +858,11 @@
             "node": "重新签到一次",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "准备同步 Cookie",
+            "type": "main",
+            "index": 0
           }
         ],
         [
@@ -762,6 +902,28 @@
           }
         ]
       ]
+    },
+    "准备同步 Cookie": {
+      "main": [
+        [
+          {
+            "node": "读取 Prowlarr 配置",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "读取 Prowlarr 配置": {
+      "main": [
+        [
+          {
+            "node": "更新 Prowlarr Cookie",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2026-01-27T12:34:02.087Z",
@@ -771,9 +933,28 @@
     "templateCredsSetupCompleted": true
   },
   "name": "rousi pro定时签到",
-  "nodeGroups": [],
+  "nodeGroups": [
+    {
+      "id": "14978610-bd3d-4efe-a65c-b8213548d22a",
+      "name": "同步搜索会话",
+      "nodeIds": [
+        "f3bc95c4-b0c1-46e6-bb65-995e9ff3fb68",
+        "e95a2e14-1217-424a-b9e8-0fd3a8ec1a28",
+        "b2ff70dd-d04e-4aea-a033-f13d0899c0d4"
+      ],
+      "description": "登录取得新会话后，保留索引器 24 的其他设置，仅更新其 Cookie；同步错误不阻断签到。"
+    }
+  ],
   "nodes": [
     {
+      "id": "f8bfdba9-621a-446b-bee6-1658cac12105",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1616,
+        960
+      ],
       "parameters": {
         "rule": {
           "interval": [
@@ -782,21 +963,9 @@
             }
           ]
         }
-      },
-      "id": "f8bfdba9-621a-446b-bee6-1658cac12105",
-      "name": "Schedule Trigger",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.1,
-      "position": [
-        -1616,
-        960
-      ]
+      }
     },
     {
-      "parameters": {
-        "action": "generate",
-        "dataPropertyName": "idempotency_key"
-      },
       "id": "2bf2a3ed-0ecb-499a-921f-7e1812148036",
       "name": "UUID",
       "type": "n8n-nodes-base.crypto",
@@ -804,12 +973,13 @@
       "position": [
         -1360,
         960
-      ]
+      ],
+      "parameters": {
+        "action": "generate",
+        "dataPropertyName": "idempotency_key"
+      }
     },
     {
-      "parameters": {
-        "jsCode": "const state = $getWorkflowStaticData('global');\nif (/^(verification-|mock_)/.test(String(state.rousiSession?.csrf_token || ''))) delete state.rousiSession;\nconst s = state.rousiSession || {};\nconst valid = !!s.cookie && !!s.csrf_token && (!s.expires_at || Date.parse(s.expires_at) > Date.now() + 60000);\nreturn [{json: {cookie: s.cookie || '', csrf_token: s.csrf_token || '', needsLogin: !valid}}];"
-      },
       "id": "512d6588-32e1-420c-a1f9-a4236af174e6",
       "name": "读取登录会话",
       "type": "n8n-nodes-base.code",
@@ -817,9 +987,20 @@
       "position": [
         -1088,
         960
-      ]
+      ],
+      "parameters": {
+        "jsCode": "const state = $getWorkflowStaticData('global');\nif (/^(verification-|mock_)/.test(String(state.rousiSession?.csrf_token || ''))) delete state.rousiSession;\nconst s = state.rousiSession || {};\nconst valid = !!s.cookie && !!s.csrf_token && (!s.expires_at || Date.parse(s.expires_at) > Date.now() + 60000);\nreturn [{json: {cookie: s.cookie || '', csrf_token: s.csrf_token || '', needsLogin: !valid}}];"
+      }
     },
     {
+      "id": "718ee95f-324e-4191-95cb-f07f6a602288",
+      "name": "需要登录",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -848,
+        960
+      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -841,17 +1022,17 @@
           "combinator": "and"
         },
         "options": {}
-      },
-      "id": "718ee95f-324e-4191-95cb-f07f6a602288",
-      "name": "需要登录",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -848,
-        960
-      ]
+      }
     },
     {
+      "id": "e36d1bcb-4535-4d4a-972c-0539050b6afa",
+      "name": "账户登录",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -640,
+        640
+      ],
       "parameters": {
         "method": "POST",
         "url": "https://rousi.pro/api/v1/session",
@@ -878,14 +1059,6 @@
           }
         }
       },
-      "id": "e36d1bcb-4535-4d4a-972c-0539050b6afa",
-      "name": "账户登录",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
-      "position": [
-        -640,
-        640
-      ],
       "credentials": {
         "httpTemplatedCustomAuth": {
           "id": "OM4Qk0DSw6xmtf8Z",
@@ -895,9 +1068,6 @@
       "onError": "continueErrorOutput"
     },
     {
-      "parameters": {
-        "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('登录响应缺少 csrf_token 或 Set-Cookie；请确认实际会话 token 的返回位置');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
-      },
       "id": "d0c9f927-f821-455d-aa22-24a7dffb8839",
       "name": "保存登录会话",
       "type": "n8n-nodes-base.code",
@@ -906,9 +1076,20 @@
         -176,
         624
       ],
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('登录响应缺少 csrf_token 或 Set-Cookie；请确认实际会话 token 的返回位置');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
+      },
       "onError": "continueErrorOutput"
     },
     {
+      "id": "58afb3d3-2721-466d-b28f-649d77455d16",
+      "name": "签到",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -416,
+        976
+      ],
       "parameters": {
         "method": "POST",
         "url": "https://rousi.pro/api/v1/me/attendance",
@@ -946,17 +1127,17 @@
           }
         }
       },
-      "id": "58afb3d3-2721-466d-b28f-649d77455d16",
-      "name": "签到",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        -416,
-        976
-      ],
       "onError": "continueErrorOutput"
     },
     {
+      "id": "108c1e38-1b59-460c-9311-b53747770d12",
+      "name": "认证失效",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -48,
+        896
+      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -978,17 +1159,17 @@
           "combinator": "and"
         },
         "options": {}
-      },
-      "id": "108c1e38-1b59-460c-9311-b53747770d12",
-      "name": "认证失效",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -48,
-        896
-      ]
+      }
     },
     {
+      "id": "58ab83f1-6986-4176-9de8-51c539718da6",
+      "name": "失效后重新登录",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        240,
+        1184
+      ],
       "parameters": {
         "method": "POST",
         "url": "https://rousi.pro/api/v1/session",
@@ -1006,14 +1187,6 @@
           }
         }
       },
-      "id": "58ab83f1-6986-4176-9de8-51c539718da6",
-      "name": "失效后重新登录",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
-      "position": [
-        240,
-        1184
-      ],
       "credentials": {
         "httpTemplatedCustomAuth": {
           "id": "OM4Qk0DSw6xmtf8Z",
@@ -1023,9 +1196,6 @@
       "onError": "continueErrorOutput"
     },
     {
-      "parameters": {
-        "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('重新登录响应缺少 csrf_token 或 Set-Cookie');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
-      },
       "id": "7e310694-5233-4f0a-941c-6e475e2696db",
       "name": "保存更新会话",
       "type": "n8n-nodes-base.code",
@@ -1034,9 +1204,20 @@
         288,
         2032
       ],
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst body = response.body || {};\nconst raw = response.headers?.['set-cookie'] || response.headers?.['Set-Cookie'];\nconst cookies = (Array.isArray(raw) ? raw : raw ? [raw] : []).flatMap(v => String(v).split(/,(?=\\s*[^;,=\\s]+=[^;,]*)/)).map(v => v.split(';')[0].trim()).filter(Boolean);\nif (!body.csrf_token || !cookies.length) throw new Error('重新登录响应缺少 csrf_token 或 Set-Cookie');\nconst session = {cookie: cookies.join('; '), csrf_token: body.csrf_token, expires_at: body.expires_at || ''};\nif (!/^(verification-|mock_)/.test(String(session.csrf_token))) $getWorkflowStaticData('global').rousiSession = session;\nreturn [{json: session}];"
+      },
       "onError": "continueErrorOutput"
     },
     {
+      "id": "8ba7abe8-b559-4bb5-9588-37c74ee5a7b4",
+      "name": "重新签到一次",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        832,
+        2000
+      ],
       "parameters": {
         "method": "POST",
         "url": "https://rousi.pro/api/v1/me/attendance",
@@ -1074,17 +1255,17 @@
           }
         }
       },
-      "id": "8ba7abe8-b559-4bb5-9588-37c74ee5a7b4",
-      "name": "重新签到一次",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
-      "position": [
-        832,
-        2000
-      ],
       "onError": "continueErrorOutput"
     },
     {
+      "id": "4dbdf469-9788-4e7e-8b95-d8a4d63dc1b0",
+      "name": "整理签到结果",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        928
+      ],
       "parameters": {
         "assignments": {
           "assignments": [
@@ -1097,17 +1278,17 @@
           ]
         },
         "options": {}
-      },
-      "id": "4dbdf469-9788-4e7e-8b95-d8a4d63dc1b0",
-      "name": "整理签到结果",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        720,
-        928
-      ]
+      }
     },
     {
+      "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
+      "name": "企业微信通知",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        992,
+        928
+      ],
       "parameters": {
         "method": "POST",
         "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send",
@@ -1127,21 +1308,100 @@
         "jsonBody": "={\n    \"msgtype\": \"text\",\n    \"text\": {\n        \"content\": {{ JSON.stringify($json.content) }}\n    }\n}",
         "options": {}
       },
-      "id": "4dcb0879-efd1-4506-b9e2-2846eb2e43f9",
-      "name": "企业微信通知",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        992,
-        928
-      ],
-      "retryOnFail": true,
       "credentials": {
         "httpQueryAuth": {
           "id": "dw4OAyEOXlllAsX2",
           "name": "qq enterprise bot"
         }
+      },
+      "retryOnFail": true
+    },
+    {
+      "id": "f3bc95c4-b0c1-46e6-bb65-995e9ff3fb68",
+      "name": "准备同步 Cookie",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        720
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sync-cookie",
+              "name": "cookie",
+              "type": "string",
+              "value": "={{ $json.cookie }}"
+            }
+          ]
+        },
+        "options": {}
       }
+    },
+    {
+      "id": "e95a2e14-1217-424a-b9e8-0fd3a8ec1a28",
+      "name": "读取 Prowlarr 配置",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        928,
+        720
+      ],
+      "parameters": {
+        "url": "http://192.168.31.13:9696/api/v1/indexer/24",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "credentials": {
+        "httpTemplatedCustomAuth": {
+          "id": "xg01BcWWP5TOznzC",
+          "name": "Prowlarr API 凭证 (何 杰)"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "b2ff70dd-d04e-4aea-a033-f13d0899c0d4",
+      "name": "更新 Prowlarr Cookie",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1152,
+        720
+      ],
+      "parameters": {
+        "method": "PUT",
+        "url": "http://192.168.31.13:9696/api/v1/indexer/24",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ (() => { const config = $json; const cookie = $('准备同步 Cookie').item.json.cookie; if (Number(config.id) !== 24 || !Array.isArray(config.fields) || !config.fields.some(f => f.name === 'cookie')) throw new Error('索引器 24 配置缺少 cookie 字段，停止更新'); if (!cookie || /[\\r\\n]/.test(cookie)) throw new Error('新 Cookie 为空或格式无效，停止更新'); return {...config, fields: config.fields.map(f => f.name === 'cookie' ? {...f, value: cookie} : f)}; })() }}",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "credentials": {
+        "httpTemplatedCustomAuth": {
+          "id": "xg01BcWWP5TOznzC",
+          "name": "Prowlarr API 凭证 (何 杰)"
+        }
+      },
+      "onError": "continueErrorOutput"
     }
   ],
   "pinData": {},
@@ -1186,6 +1446,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2026-10-20T11:51:38.127Z",
-  "versionId": "7cd83130-10a0-4239-8450-795098c88110"
+  "updatedAt": "2026-10-20T12:39:34.454Z",
+  "versionId": "f2b064c4-3833-4b86-9d0a-c89c9a803036"
 }
