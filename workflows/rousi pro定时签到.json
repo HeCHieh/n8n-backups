@@ -1431,9 +1431,9 @@
     },
     "global": {
       "rousiSession": {
-        "cookie": "__Host-peergo_session=QtkHsREZceBtV6Hh7mOETBPYBjZQefsGuo7Q788D1So",
-        "csrf_token": "2TGlQ_-px-P_445x9rW0XjE-qOghUCGBGiIZjA3QNKk",
-        "expires_at": "2026-11-19T11:11:15.902626818Z"
+        "cookie": "__Host-peergo_session=GuwNozkTLGly1hDnvvFFUfbWCRCDauUXvnSn5GrrLL0",
+        "csrf_token": "RM8hqx86ReYn1fdJVRt4nERNbPkm-aVsbuWun36wsGo",
+        "expires_at": "2026-12-19T16:03:53.542116724Z"
       }
     }
   },
